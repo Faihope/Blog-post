@@ -4,10 +4,33 @@ from . import main
 from .forms import RegistrationForm,LoginForm
 
 
+
+
+posts=[
+    {
+       'author':'Faith Hope',
+       'title':'Blog Post one',
+       'content':'content 1'  ,
+       'date_posted':'20/3/2021' 
+    },
+    
+        
+         {
+       'author':'Patrick Rop',
+       'title':'Blog Post Two',
+       'content':'content 2'  ,
+       'date_posted':'22/3/2021' 
+    }
+    
+  
+    
+]
+
+
 #views
 @main.route('/')
 def home():
-    return render_template("index.html")
+    return render_template("home.html",posts=posts)
 
 @main.route('/about')
 def about():
