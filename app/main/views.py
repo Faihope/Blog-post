@@ -2,7 +2,6 @@ from app.main.forms import RegistrationForm
 from flask import render_template,redirect,flash,url_for,Blueprint,request
 from . import main
 from .. import db
-
 from flask_login import login_user,logout_user,login_required
 from ..models import User
 from .forms import RegistrationForm,LoginForm
@@ -78,4 +77,9 @@ def login():
         flash('Invalid username or Password')
 
     return render_template('login.html', title='Login', form=form)
-   
+
+@main.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("main.home"))
