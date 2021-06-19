@@ -1,6 +1,8 @@
 from app.main.forms import RegistrationForm
 from flask import render_template,redirect,flash,url_for,Blueprint,request
 from . import main
+from .. import db
+
 from flask_login import login_user,logout_user,login_required
 from ..models import User
 from .forms import RegistrationForm,LoginForm
@@ -46,9 +48,13 @@ def about():
 def register():
     form=RegistrationForm()
     if form.validate_on_submit():
+        user = User(email = form.email.data, username = form.username.data,password = form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        
         
         flash(f'Account created for {form.username.data}!','success')
-        return redirect(url_for('.home'))
+        return redirect(url_for('.login'))
         
     '''
     View root page function that returns the index page and its data
