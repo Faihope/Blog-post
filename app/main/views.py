@@ -2,6 +2,7 @@ from app.main.forms import RegistrationForm
 from flask import render_template,redirect,flash,url_for,Blueprint
 from . import main
 from .forms import RegistrationForm,LoginForm
+from flask_sqlalchemy import SQLAlchemy
 
 
 
@@ -28,7 +29,10 @@ posts=[
 
 
 #views
+
 @main.route('/')
+@main.route('/home')
+
 def home():
     return render_template("home.html",posts=posts)
 
@@ -40,6 +44,7 @@ def about():
 def register():
     form=RegistrationForm()
     if form.validate_on_submit():
+        
         flash(f'Account created for {form.username.data}!','success')
         return redirect(url_for('.home'))
         
@@ -55,5 +60,11 @@ def login():
     '''
     View root page function that returns the index page and its data
     '''
-    title = 'Home - Login'
-    return render_template('login.html' ,title=title,form = form )
+    if form.validate_on_submit():
+        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
+            flash('You have been logged in!', 'success')
+            return redirect(url_for('home'))
+        else:
+            flash('Login Unsuccessful. Please check username and password', 'danger')
+    return render_template('login.html', title='Login', form=form)
+   
