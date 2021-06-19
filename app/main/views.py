@@ -1,6 +1,8 @@
 from app.main.forms import RegistrationForm
-from flask import render_template,redirect,flash,url_for,Blueprint
+from flask import render_template,redirect,flash,url_for,Blueprint,request
 from . import main
+from flask_login import login_user,logout_user,login_required
+from ..models import User
 from .forms import RegistrationForm,LoginForm
 from flask_sqlalchemy import SQLAlchemy
 
@@ -61,10 +63,13 @@ def login():
     View root page function that returns the index page and its data
     '''
     if form.validate_on_submit():
-        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
-            flash('You have been logged in!', 'success')
-            return redirect(url_for('home'))
-        else:
-            flash('Login Unsuccessful. Please check username and password', 'danger')
+         
+        user = User.query.filter_by(email = form.email.data).first()
+        if user is not None and user.verify_password(form.password.data):
+            login_user(user,form.remember.data)
+            return redirect(request.args.get('next') or url_for('main.home'))
+
+        flash('Invalid username or Password')
+
     return render_template('login.html', title='Login', form=form)
    
