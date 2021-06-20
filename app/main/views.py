@@ -6,8 +6,8 @@ from .. import db
 import secrets
 import os
 from flask_login import login_user,logout_user,login_required,current_user
-from ..models import User
-from .forms import RegistrationForm,LoginForm,UpdateAccountForm
+from ..models import Post, User
+from .forms import RegistrationForm,LoginForm,UpdateAccountForm,PostForm
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -121,3 +121,14 @@ def account():
     image_file = url_for('static',filename='css/photos/' + current_user.image_file)
     
     return render_template('account.html',image_file=image_file,form=form)
+
+
+@main.route('/post/new',methods=['GET','POST'])
+@login_required
+def new_post():
+    form =PostForm()
+    if form.validate_on_submit():
+        post =Post(title=form.title.data)
+        flash("Your post has been created",'success')
+        return redirect(url_for('.home'))
+    return render_template('create_post.html',form=form)
