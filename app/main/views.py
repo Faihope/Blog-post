@@ -2,7 +2,7 @@ from app.main.forms import RegistrationForm
 from flask import render_template,redirect,flash,url_for,Blueprint,request
 from . import main
 from .. import db
-from flask_login import login_user,logout_user,login_required
+from flask_login import login_user,logout_user,login_required,current_user
 from ..models import User
 from .forms import RegistrationForm,LoginForm
 from flask_sqlalchemy import SQLAlchemy
@@ -45,6 +45,8 @@ def about():
 
 @main.route('/register',methods=['GET','POST'])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
     form=RegistrationForm()
     if form.validate_on_submit():
         user = User(email = form.email.data, username = form.username.data,password = form.password.data)
@@ -63,6 +65,8 @@ def register():
 
 @main.route('/login',methods=['GET','POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
     form = LoginForm()
     '''
     View root page function that returns the index page and its data
@@ -83,3 +87,11 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("main.home"))
+
+
+@main.route('/account')
+@login_required
+def account():
+    image_file = url_for('static',filename='css/photos/' + current_user.image_file)
+    
+    return render_template('account.html',image_file=image_file)
