@@ -13,26 +13,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 
 
-posts=[
-    {
-       'author':'Faith Hope',
-       'title':'Blog Post one',
-       'content':'content 1'  ,
-       'date_posted':'20/3/2021' 
-    },
-    
-        
-         {
-       'author':'Patrick Rop',
-       'title':'Blog Post Two',
-       'content':'content 2'  ,
-       'date_posted':'22/3/2021' 
-    }
-    
-  
-    
-]
-
 
 #views
 
@@ -40,6 +20,7 @@ posts=[
 @main.route('/home')
 
 def home():
+    posts=Post.query.all()
     return render_template("home.html",posts=posts)
 
 @main.route('/about')
@@ -128,7 +109,9 @@ def account():
 def new_post():
     form =PostForm()
     if form.validate_on_submit():
-        post =Post(title=form.title.data)
+        post =Post(title=form.title.data,content=form.content.data,author=current_user)
+        db.session.add(post)
+        db.session.commit()
         flash("Your post has been created",'success')
         return redirect(url_for('.home'))
     return render_template('create_post.html',form=form)
