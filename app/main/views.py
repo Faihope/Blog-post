@@ -1,8 +1,8 @@
+from ..request import get_quotes
 from app.main.forms import RegistrationForm
 from flask import render_template,redirect,flash,url_for,Blueprint,request
 from . import main
-from .. import app
-from .. import db
+from .. import app,db
 import secrets
 import os
 from flask_login import login_user,logout_user,login_required,current_user
@@ -10,18 +10,13 @@ from ..models import Post, User
 from .forms import RegistrationForm,LoginForm,UpdateAccountForm,PostForm
 from flask_sqlalchemy import SQLAlchemy
 
-
-
-
-
 #views
 
 @main.route('/')
-@main.route('/home')
-
 def home():
+    quotes=get_quotes()
     posts=Post.query.all()
-    return render_template("home.html",posts=posts)
+    return render_template("home.html",posts=posts,quotes=quotes)
 
 @main.route('/about')
 def about():
@@ -50,7 +45,7 @@ def register():
 @main.route('/login',methods=['GET','POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return redirect(url_for('.home'))
     form = LoginForm()
     '''
     View root page function that returns the index page and its data
@@ -115,3 +110,17 @@ def new_post():
         flash("Your post has been created",'success')
         return redirect(url_for('.home'))
     return render_template('create_post.html',form=form)
+
+# @main.route('/post/<int:post_id>')
+# def post(post_id):
+#     post = Post.query.get_or_404(post_id)
+#     return render_template('post.html', title=post.title, post=post)
+
+# @main.route('/quotes')
+# def quotes():
+#     quote=get_quotes()
+    
+#     return render_template('quotes.html',quote=quote)
+    
+    
+
