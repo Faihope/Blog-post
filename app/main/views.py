@@ -136,7 +136,7 @@ def update_post(post_id):
     
     return render_template('create_post.html', title='Update Post',legend='Update Post', post=post,form=form)
 
-@main.route('/post/<int:post_id>/delete',methods=['POST'])
+@main.route('/post/<int:post_id>/delete',methods=['POST','GET'])
 @login_required
 def delete_post(post_id): 
     post = Post.query.get_or_404(post_id)
@@ -144,6 +144,8 @@ def delete_post(post_id):
         os.abort(403)
     db.session.delete(post)
     db.session.commit()
+    
+    
     flash("Your post has been deleted",'success')
     return redirect(url_for('.home'))
  

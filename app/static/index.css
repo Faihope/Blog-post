@@ -9,6 +9,7 @@ body {
     color: #444444;
     text-align: center;
   }
+ 
   
   .bg-steel {
     background-color: #5f788a;
@@ -40,6 +41,9 @@ body {
   a.article-title:hover {
     color: #428bca;
     text-decoration: none;
+  }
+  .alert{
+    margin-top: 4%;
   }
   
   .article-content {
